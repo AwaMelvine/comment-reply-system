@@ -1,0 +1,29 @@
+.post {
+	border: 1px solid #ccc;
+}
+.comments {
+	margin-top: 10px;
+	border: 1px solid #ccc;
+}
+.comment {
+	margin-bottom: 10px;
+}
+.comment-details {
+	width: 91.5%;float: left;
+}
+.comment-details p {
+	margin-bottom: 0px;
+}
+.comment .profile_pic {
+	width: 35px;
+	height: 35px;
+	margin-right: 5px;
+	float: left;
+	border-radius: 50%;
+}
+.reply {
+	margin-left: 30px;
+}
+.form-control {
+	border-radius: 0px;
+}
