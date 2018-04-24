@@ -5,13 +5,18 @@ form button {
 	margin: 5px 0px;
 }
 
+textarea {
+	display: block;
+	margin-bottom: 10px;
+}
+
 /*post*/
 .post {
 	border: 1px solid #ccc;
 }
 
 /*comments*/
-.comments {
+.comments-section {
 	margin-top: 10px;
 	border: 1px solid #ccc;
 }

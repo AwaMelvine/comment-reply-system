@@ -2,11 +2,12 @@ $(document).ready(function(){
 	// When user clicks on submit comment to add comment under post
 	$(document).on('click', '#submit_comment', function(e) {
 		e.preventDefault();
+
 		var comment_text = $('#comment_text').val();
-
-		if (comment_text === "" ) return;
-
 		var url = $('#comment_form').attr('action');
+
+		// Stop executing if not value is entered
+		if (comment_text === "" ) return;
 
 		$.ajax({
 			url: url,
@@ -32,23 +33,20 @@ $(document).ready(function(){
 	$(document).on('click', '.reply-btn', function(e){
 		e.preventDefault();
 
+		// Get the comment id from the reply button's data-id attribute
 		var comment_id = $(this).data('id');
 
-		// show/hide the input form for a reply
-		$(this).parent().siblings('form.comment_reply_form_' + comment_id).toggle(500);
+		// show/hide the appropriate reply form (from the reply-btn (this), go to the parent element (comment-details)
+		// and then its siblings which is a form element with id comment_reply_form_ + comment_id)
+		$(this).parent().siblings('form#comment_reply_form_' + comment_id).toggle(500);
 
 		$(document).on('click', '.submit-reply', function(e){
 			e.preventDefault();
 
 			// elements
-			var reply_form = $(this).parent(); // the comment element being replied to
-			var comment_elt = $(this).parent().parent(); // the comment element being replied to
-			var reply_textarea_elt = $(this).siblings('textarea'); // reply textarea element
-			
-			// values
-			var comment_id = reply_form.data('id');
+			var reply_textarea = $(this).siblings('textarea'); // reply textarea element
 			var reply_text = $(this).siblings('textarea').val();
-			var url = reply_form.attr('action');
+			var url = $(this).parent().attr('action');
 
 			$.ajax({
 				url: url,
@@ -62,13 +60,12 @@ $(document).ready(function(){
 					if (data === "error") {
 						alert('There was an error adding reply. Please try again');
 					} else {
-						$('.replies_wrapper_' + comment_id).prepend(data);
-						reply_textarea_elt.val('');
+						$('.replies_wrapper_' + comment_id).append(data);
+						reply_textarea.val('');
 					}
 				}
 			});
 		});
-
 	});
 
 });
