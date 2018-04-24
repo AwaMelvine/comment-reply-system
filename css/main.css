@@ -1,12 +1,32 @@
+.form-control {
+	border-radius: 0px;
+}
+form button {
+	margin: 5px 0px;
+}
+
+/*post*/
 .post {
 	border: 1px solid #ccc;
 }
+
+/*comments*/
 .comments {
 	margin-top: 10px;
 	border: 1px solid #ccc;
 }
 .comment {
 	margin-bottom: 10px;
+}
+.comment .comment-name {
+	font-weight: bold;
+}
+.comment .comment-date {
+	font-style: italic;
+	font-size: 0.8em;
+}
+.comment .reply-btn, .edit-btn {
+	font-size: 0.8em;
 }
 .comment-details {
 	width: 91.5%;float: left;
@@ -21,9 +41,15 @@
 	float: left;
 	border-radius: 50%;
 }
+
+/*replies*/
 .reply {
 	margin-left: 30px;
 }
-.form-control {
-	border-radius: 0px;
+.reply_form {
+	margin-left: 30px;
+	display: none;
+}
+#comment_form {
+	margin-top: 10px;
 }

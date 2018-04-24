@@ -20,32 +20,38 @@
 		</div>
 
 		<div class="col-md-6 col-md-offset-3 comments">
-			<h2><?php echo count($comments) ?> Comment(s)</h2>
-			<hr>
-
 			<form class="clearfix" action="index.php" method="post" id="comment_form">
 				<textarea name="comment_text" id="comment_text" class="form-control" cols="30" rows="3"></textarea>
-				<button class="btn btn-primary btn-sm pull-right" id="comment_btn" style="margin: 5px 0px;">Submit comment</button>
+				<button class="btn btn-primary btn-sm pull-right" id="comment_btn">Submit comment</button>
 			</form>
 
 			<div class="well">
 				<h4 class="text-center"><a href="#">Sign in</a> to post a comment</h4>
 			</div>
 
+			<h2><span id="comments_count"><?php echo count($comments) ?></span> Comment(s)</h2>
+			<hr>
+
+			<!-- comments wrapper -->
+			<div id="comments-wrapper">
+
 			<?php if (isset($comments)): ?>
 				<!-- Display comments -->
-				
 				<?php foreach ($comments as $comment): ?>
 					<!-- comment -->
 					<div class="comment clearfix">
 						<img src="images/profile.png" alt="" class="profile_pic">
 						<div class="comment-details">
-							<span><b><?php echo getUsernameById($comment['id']) ?></b> 
-								<small><i><?php echo date("F j, Y ", strtotime($comment["created_at"])); ?></i></small>
-							</span>
+							<span class="comment-name"><?php echo getUsernameById($comment['id']) ?></span>
+							<span class="comment-date"><?php echo date("F j, Y ", strtotime($comment["created_at"])); ?></span>
 							<p><?php echo $comment['body']; ?></p>
-							<small><a href="#">reply</a></small> &nbsp;&nbsp; <small><a href="#">edit</a></small>
+							<a class="reply-btn" href="#">reply</a> &nbsp;&nbsp; <a class="edit-btn" href="#">edit</a>
 						</div>
+						<!-- reply form -->
+						<form action="index.php" class="reply_form" data-id="<?php echo $comment['id']; ?>">
+							<textarea class="form-control" name="reply_text" id="reply_text" cols="30" rows="2"></textarea>
+							<button class="btn btn-primary btn-xs pull-right submit-reply">Submit reply</button>
+						</form>
 					</div>
 
 						<!-- GET ALL REPLIES -->
@@ -56,20 +62,26 @@
 								<div class="comment reply clearfix">
 									<img src="images/profile.png" alt="" class="profile_pic">
 									<div class="comment-details">
-										<span><b><?php echo getUsernameById($reply['id']) ?></b> 
-											<small><i><?php echo date("F j, Y ", strtotime($reply["created_at"])); ?></i></small>
-										</span>
+										<span class="comment-name"><?php echo getUsernameById($reply['id']) ?></span>
+										<span class="comment-date"><?php echo date("F j, Y ", strtotime($reply["created_at"])); ?></span>
 										<p><?php echo $reply['body']; ?></p>
-										<small><a href="#">reply</a></small> &nbsp;&nbsp; <small><a href="#">edit</a></small>
+										<a class="reply-btn" href="#">reply</a> &nbsp;&nbsp; <a class="edit-btn" href="#">edit</a>
 									</div>
 								</div>
+								<!-- reply form -->
+								<form action="index.php" class="reply_form">
+									<div class="form-group">
+										<textarea class="form-control" name="reply_text" id="reply_text" cols="30" rows="2"></textarea>
+										<button class="btn btn-primary btn-xs pull-right">Submit reply</button>
+									</div>
+								</form>
 							<?php endforeach ?>
 						<?php endif ?>
 				<?php endforeach ?>
 			<?php else: ?>
 				<h2>Be the first to comment on this post</h2>
 			<?php endif ?>
-
+			</div><!-- comments wrapper -->
 		</div>
 	</div>
 </div>
