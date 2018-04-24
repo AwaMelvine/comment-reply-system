@@ -1,13 +1,12 @@
 <?php 
 	$db = mysqli_connect("localhost", "root", "", "comment-reply-system");
 
-	$p_result = mysqli_query($db, "SELECT * FROM posts WHERE id=1");
+	$post_query_result = mysqli_query($db, "SELECT * FROM posts WHERE id=1");
 
-	$post = mysqli_fetch_assoc($p_result);
+	$post = mysqli_fetch_assoc($post_query_result);
 
-	$c_result = mysqli_query($db, "SELECT * FROM comments WHERE post_id=" . $post['id'] . " ORDER BY created_at DESC");
-	$comments = mysqli_fetch_all($c_result, MYSQLI_ASSOC);
-
+	$comments_query_result = mysqli_query($db, "SELECT * FROM comments WHERE post_id=" . $post['id'] . " ORDER BY created_at ASC");
+	$comments = mysqli_fetch_all($comments_query_result, MYSQLI_ASSOC);
 
 
 	// If the user clicked submit on comment form...
@@ -32,7 +31,7 @@
 			$comment = "<div class='comment clearfix'>
 						<img src='images/profile.png' alt='' class='profile_pic'>
 						<div class='comment-details'>
-							<span class='comment-name'>" . getUsernameById($inserted_comment['id']) . "</span>
+							<span class='comment-name'>" . getUsernameById($inserted_comment['user_id']) . "</span>
 							<span class='comment-date'>" . date('F j, Y ', strtotime($inserted_comment['created_at'])) . "</span>
 							<p>" . $inserted_comment['body'] . "</p>
 							<a class='reply-btn' href='#'>reply</a> &nbsp;&nbsp; <a class='edit-btn' href='#'>edit</a>
@@ -55,7 +54,49 @@
 		}
 	}
 
+	// If the user clicked submit on reply form...
+	if (isset($_POST['reply_posted'])) {
+		
+		global $db;
 
+		// grab the reply that was submitted through Ajax call
+		$reply_text = $_POST['reply_text']; 
+		$comment_id = $_POST['comment_id']; 
+
+		// insert reply into database
+		$sql = "INSERT INTO replies (user_id, comment_id, body, created_at, updated_at) VALUES (1, $comment_id, '$reply_text', now(), null)";
+		$result = mysqli_query($db, $sql);
+
+		$inserted_id = $db->insert_id;
+		$res = mysqli_query($db, "SELECT * FROM replies WHERE id=$inserted_id");
+		$inserted_reply = mysqli_fetch_assoc($res);
+		
+		// if insert was successful, get that same reply from the database and return it
+		if ($result) {
+			$reply = "<div class='comment reply clearfix'>
+						<img src='images/profile.png' alt='' class='profile_pic'>
+						<div class='comment-details'>
+							<span class='comment-name'>" . getUsernameById($inserted_reply['user_id']) . "</span>
+							<span class='comment-date'>" . date('F j, Y ', strtotime($inserted_reply['created_at'])) . "</span>
+							<p>" . $inserted_reply['body'] . "</p>
+							<a class='reply-btn' href='#'>reply</a> &nbsp;&nbsp; <a class='edit-btn' href='#'>edit</a>
+						</div>
+						<!-- reply form -->
+						<form action='index.php' class='reply_form' data-id='" . $inserted_reply['id'] . "'>
+							<textarea class='form-control' name='reply_text' id='reply_text' cols='30' rows='2'></textarea>
+							<button class='btn btn-primary btn-xs pull-right submit-reply'>Submit reply</button>
+						</form>
+					</div>";
+			echo $reply;
+			exit();
+		} else {
+			echo "error";
+			exit();
+		}
+	}
+
+
+	// Receives a user id and returns the username
 	function getUsernameById($id)
 	{
 		global $db;
@@ -65,22 +106,22 @@
 		return mysqli_fetch_assoc($result)['username'];
 	}
 
+	// Receives a comment id and returns the username
 	function getRepliesByCommentId($id)
 	{
 		global $db;
 
-		$result = mysqli_query($db, "SELECT * FROM replies WHERE id=$id");
-
+		$result = mysqli_query($db, "SELECT * FROM replies WHERE comment_id=$id");
 		$replies = mysqli_fetch_all($result, MYSQLI_ASSOC);
 		return $replies;
 	}
 
+	// Receives a post id and returns the total number of comments on that post
 	function getCommentsCountByPostId($post_id)
 	{
 		global $db;
 		$result = mysqli_query($db, "SELECT COUNT(*) AS total FROM comments");
 		$data = mysqli_fetch_assoc($result);
-
 		return $data['total'];
 	}
 
